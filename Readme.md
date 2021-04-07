@@ -1,5 +1,6 @@
 # Pairing exercise
-This (C#) API project is poorly written. Please review and refactor areas where you think can be improved. 
+This (C#) API project is not maintainable and it is poorly written. 
+Please review and improve in appropriate areas. 
 
 Consider all aspects of good software engineering and show us how you'll make it a production ready code.
 
@@ -12,7 +13,7 @@ Consider all aspects of good software engineering and show us how you'll make it
 
 This API has 1 endpoint only which is: `GET /websearch?searchterms={search-terms}` 
 
-On execution, it will perform web search on both Google and Bing and will return the top 5 url results from each search provider, such as:
+On execution, it will perform web search on both Google and Bing and it will return the top **5** url results from each search provider, such as:
 
 ```json
 {
