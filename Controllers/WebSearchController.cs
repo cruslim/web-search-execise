@@ -1,6 +1,5 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,25 +11,18 @@ namespace WebSearchRefactorExercise.Controllers
     [Route("[controller]")]
     public class WebSearchController : ControllerBase
     {
-        private readonly ILogger<WebSearchController> _logger;
-
-        public WebSearchController(ILogger<WebSearchController> logger)
-        {
-            _logger = logger;
-        }
-
         [HttpGet]
-        public async Task<Response> Get([FromQuery] string searchTerms = "")
+        public Response Get([FromQuery] string searchTerms = "")
         {
             var response = new Response
             {
                 SearchTerms = searchTerms
             };
 
-            var googleSearchResult = await new GoogleSearch().Search(searchTerms);
+            var googleSearchResult = new GoogleSearch().Search(searchTerms);
             response.Results.Add(googleSearchResult);
 
-            var bingSearchResult = await new BingSearch().Search(searchTerms);
+            var bingSearchResult = new BingSearch().Search(searchTerms);
             response.Results.Add(bingSearchResult);
 
             return response;
@@ -39,14 +31,15 @@ namespace WebSearchRefactorExercise.Controllers
 
     public class GoogleSearch
     {
-        public async Task<SearchResponse> Search(string searchTerms)
+        public SearchResponse Search(string searchTerms)
         {
             var response = new SearchResponse
             {
                 Provider = "Google",
             };
 
-            var content = await new BrowserService().GetContent($"https://www.google.com.au/search?q={searchTerms}");
+            var browserService = new BrowserService();
+            var content = browserService.GetContent($"https://www.google.com.au/search?q={searchTerms}").Result;
 
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(content);
@@ -61,14 +54,15 @@ namespace WebSearchRefactorExercise.Controllers
 
     public class BingSearch
     {
-        public async Task<SearchResponse> Search(string searchTerms)
+        public SearchResponse Search(string searchTerms)
         {
             var response = new SearchResponse
             {
                 Provider = "Bing",
             };
 
-            var content = await new BrowserService().GetContent($"https://www.bing.com/search?q={searchTerms}");
+            var browserService = new BrowserService();
+            var content = browserService.GetContent($"https://www.bing.com/search?q={searchTerms}").Result;
 
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(content);
